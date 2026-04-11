@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import './Services.css';
@@ -99,6 +99,15 @@ const StarPicker = ({ value, onChange }) => (
 
 export default function Services() {
     const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const handleServiceClick = () => {
+        if (user) {
+            navigate(user.role === 'admin' ? '/admin' : '/dashboard');
+        } else {
+            navigate('/login');
+        }
+    };
     const [reviews, setReviews] = useState([]);
     const [avgRating, setAvgRating] = useState(0);
     const [totalReviews, setTotalReviews] = useState(0);
@@ -170,7 +179,7 @@ export default function Services() {
                 {/* Services Grid with Real Images */}
                 <div className="services-full-grid">
                     {services.map((s) => (
-                        <div key={s.name} className="service-full-card">
+                        <div key={s.name} className="service-full-card" onClick={handleServiceClick} style={{ cursor: 'pointer' }}>
                             <div className="sfc-image">
                                 <img
                                     src={s.image}
